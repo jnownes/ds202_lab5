@@ -1,0 +1,56 @@
+---
+title: "team.Rmd"
+author: "John Nownes"
+date: "4/14/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(lubridate)
+library(dplyr)
+library(tidyverse)
+```
+
+## Part 1
+1.
+```{r}
+acc <- read.csv("https://raw.githubusercontent.com/xdaiISU/ds202materials/master/hwlabs/fars2017/accident.csv", stringsAsFactors = FALSE)
+
+person <- read.csv("https://raw.githubusercontent.com/xdaiISU/ds202materials/master/hwlabs/fars2017/person.csv", stringsAsFactors = FALSE)
+
+
+table(acc$DAY_WEEK)
+ggplot(acc, mapping = aes(x=wday(DAY_WEEK, label = TRUE))) + geom_bar() + xlab("Day of week") + ylab("Total number of accidents") + ggtitle("Total number of accidents on each day of the week")
+```
+
+From the table and graph above, it is clear that on Friday, Saturday, and Sunday there are a greater number of accidents than on Monday, Tuesday, Wednesday, and Thursday.
+
+2.
+```{r}
+table(acc$HOUR)
+acc %>%
+  filter(HOUR < 24) %>%
+  ggplot(mapping = aes(x=factor(as.factor(paste(HOUR,":00",sep="")), levels= c("0:00","1:00","2:00","3:00","4:00","5:00","6:00","7:00","8:00","9:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00","19:00","20:00","21:00","22:00","23:00")))) + geom_bar() + xlab("Hour of Day (24-hour clock)") + ylab("Total number of accidents") + ggtitle("Total number of accidents based on time of day") + theme(axis.text.x = element_text(angle = 90, vjust = .4))
+```
+
+Based on the above graph, the highest number of accidents occur between 15:00 and 22:00, or from 3-10pm. Something to note about the above graph is that ":00" was concatenated to the end of each hour of the day. This makes the graph more easily interpretable, but to order the hours in the correct sequence, conversion to factors is necessary. The result is a graph that anyone with knowledge of the 24-hour clock can understand.
+
+3.
+```{r}
+nrow(acc %>%
+  filter(DRUNK_DR > 0))
+```
+
+There were 8769 accidents with at least one drunk driver. This is out of the total 34,247 total accidents, so we can say that about 25% of accidents occur with at least one drunk driver. However, from the FARS Analytical User's Manual, the DRUNK_DR statistic is "unreliable for 1977, 1981, and 1999-2007, as it was incorrectly
+derived for those years."
+
+## Part 2
+4.
+5.
+6.
+
+## Part 3
+7.
+8.
+9.
