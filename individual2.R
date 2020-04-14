@@ -8,6 +8,7 @@ acc <- read.csv("https://raw.githubusercontent.com/xdaiISU/ds202materials/master
 person <- acc <- read.csv("https://raw.githubusercontent.com/xdaiISU/ds202materials/master/hwlabs/fars2017/person.csv", stringsAsFactors = FALSE)
 
 View(acc)
+View(person)
 
 
 #PART ONE:
@@ -24,3 +25,15 @@ acc %>%
   ggplot(acc, mapping = aes(x=DAY_WEEK, y=total)) + geom_col() + xlab("Day of week") + ylab("Total number of accidents") + ggtitle("Total number of accidents based on weekday")
 
 #Question 2
+
+
+#PART 2:
+
+#Question 5:
+combined <- acc %>%
+  full_join(person, by = c('STATE', 'ST_CASE', 'COUNTY', 'DAY', 'MONTH', 'HOUR', 'MINUTE'))
+
+View(combined)
+
+
+#Question 6
