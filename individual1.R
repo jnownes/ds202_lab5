@@ -21,3 +21,7 @@ acc %>%
 # 3
 nrow(acc %>%
   filter(DRUNK_DR > 0))
+
+# 4
+person = person %>%
+  filter(PER_TYP == 1)

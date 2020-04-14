@@ -47,6 +47,11 @@ derived for those years."
 
 ## Part 2
 4.
+```{r}
+person = person %>%
+  filter(PER_TYP == 1)
+```
+
 5.
 6.
 
