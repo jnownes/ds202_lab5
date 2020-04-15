@@ -56,6 +56,69 @@ combined %>%
 library("readxl")
 
 US_GLC<- readxl::read_xlsx('FRPP_GLC_UnitedStatesFeb132020.xlsx')
+county<- map_data('county')
+
+
+#2
+US_GLC2 <- US_GLC %>%
+  mutate(`State Code` = as.integer(`State Code`), `County Code` = as.integer(`County Code`), `City Code` = as.integer(`City Code`)) %>%
+  inner_join(combined, c(`County Code` = 'COUNTY', `State Code` = 'STATE', `City Code` = 'CITY'))
+
+ggplot(county, mapping=aes(x=long, y=lat)) + geom_polygon(mapping = aes(group=group, fill=)) + geom_point(US_GLC2, mapping = aes(x=LONGITUD, y=LATITUDE), color='lightgreen', alpha=.2, size=.02) + xlim(c(-130, -60)) + ylim(c(20,50))
+
+View(US_GLC2)
+
+
+#Question 9
+ggplot(county, mapping = aes(x=long, y=lat)) + geom_polygon(mapping=aes(group=group)) + geom_point(US_GLC2 %>% filter(MONTH %in% c(12,1,2)), mapping=aes(x=LONGITUD, y= LATITUDE), color='light green', alpha=.2, size=0.02) + xlim(c(-130, -60)) + ylim(c(20,50))
+
+ggplot(county, mapping = aes(x=long, y=lat)) + geom_polygon(mapping=aes(group=group)) + geom_point(US_GLC2 %>% filter(MONTH %in% c(6,7,8)), mapping=aes(x=LONGITUD, y= LATITUDE), color='light green', alpha=.2, size=0.02) + xlim(c(-130, -60)) + ylim(c(20,50))
+
+
+accident <- acc %>%
+  filter(WEATHER<98) 
+
+weather <- accident %>%
+  group_by(STATE, WEATHER) %>%
+  summarise(n = n()) 
+
+ggplot(weather, mapping = aes(x=STATE, y=n, fill = WEATHER)) + geom_bar(stat='identity') +xlim(c(0,60)) + ylim(c(0, 3500))
+
+
+summer <- acc %>%
+  filter(MONTH == 6 | MONTH == 7 | MONTH == 8) 
+
+weather <- summer %>%
+  group_by(STATE, WEATHER) %>%
+  summarise(n = n()) 
+
+#SUMMER
+US_GLC2 %>%
+  filter(MONTH == 6 | MONTH == 7 | MONTH == 8) %>% 
+  filter(WEATHER < 98) %>%
+  group_by(`State Name`, WEATHER, MONTH) %>%
+  summarise(n = n()) %>%
+  ggplot(acc, mapping = aes(x=`State Name`, y=n, fill = WEATHER)) + geom_col() + coord_flip() + xlab('STATE') + ylab('NUMBER OF ACCIDENTS') + ggtitle("Accidents by State during the Summer Season")
+
+#WINTER
+US_GLC2 %>%
+  filter(MONTH == 12 | MONTH == 1 | MONTH == 2) %>% 
+  filter(WEATHER < 98) %>%
+  group_by(`State Name`, WEATHER, MONTH) %>%
+  summarise(n = n()) %>%
+  ggplot(acc, mapping = aes(x=`State Name`, y=n, fill = WEATHER)) + geom_col() + coord_flip() + xlab('STATE') + ylab('NUMBER OF ACCIDENTS') + ggtitle("Accidents by State during the Winter Season")
+
+
+
+
+
+
+
+
+
+#7/8 ?
+
+US_GLC<- readxl::read_xlsx('FRPP_GLC_UnitedStatesFeb132020.xlsx')
 #US_territory<- read_excel('FRPP_GLC_US_Territories12419.xlsx')
 
 US_GLC <- US_GLC %>%
@@ -85,3 +148,4 @@ join <- join %>%
 join<- join[order(join$order), ]
 
 ggplot(join, aes(long, lat)) + geom_polygon(aes(group = group, fill = total_accidents)) 
+
