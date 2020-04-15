@@ -53,7 +53,30 @@ person = person %>%
 ```
 
 5.
+```{r}
+combined <- acc %>%
+  full_join(person, by = c('STATE', 'ST_CASE', 'COUNTY', 'DAY', 'MONTH', 'HOUR', 'MINUTE'))
+
+```
+
 6.
+
+```{r}
+combined$SEX <- as.factor(combined$SEX)
+
+combined %>%
+  filter(SEX == 1 | SEX ==2) %>%
+  filter(HOUR < 24) %>%
+  ggplot(combined, mapping =aes(x= HOUR, fill=wday(DAY_WEEK, label = TRUE))) + geom_bar() + facet_wrap(~SEX) + labs(fill = "Day of Week") + xlab('Hour of Day') + ylab('Number of accidents') + ggtitle('Accidents by Day of week, hour, and sex')
+
+
+combined %>%
+  filter(SEX == 1 | SEX == 2) %>%
+  filter(HOUR < 24) %>%
+  ggplot(combined, mapping =aes(x= HOUR, fill=SEX)) + geom_bar() + facet_wrap(~wday(DAY_WEEK, label = TRUE)) + scale_fill_discrete(name = "SEX", labels = c('Male', 'Female')) + xlab('Hour of Day') + ylab('Number of accidents') + ggtitle('Accidents by Day of week, hour, and sex')
+
+
+```
 
 ## Part 3
 7.
