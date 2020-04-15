@@ -60,6 +60,11 @@ US_GLC$`State Name` <- tolower(US_GLC$`State Name`)
 US_GLC$`County Name` <- tolower(US_GLC$`County Name`)
 
 
+acc %>%
+  select(STATE, ST_CASE, COUNTY) %>%
+  group_by(COUNTY) %>%
+  summarize(total_accidents= n())
+
 # Problem here
 join<- acc %>%
   select(STATE, ST_CASE, COUNTY) %>%
@@ -79,3 +84,60 @@ join <- join %>%
 join<- join[order(join$order), ]
 
 ggplot(join, aes(long, lat)) + geom_polygon(aes(group = group, fill = total_accidents)) 
+
+
+
+
+
+
+
+
+
+library("readxl")
+
+
+#7/8
+US_GLC<- readxl::read_xlsx('FRPP_GLC_UnitedStatesFeb132020.xlsx')
+county<- map_data('county')
+county <- county %>%
+  mutate(`State Name` = region, `County Name` = subregion) %>%
+  select(`State Name`, `County Name`, long, lat, group, order)
+
+US_GLC$STATE <- as.integer(US_GLC$`State Code`)
+US_GLC$COUNTY <- as.integer(US_GLC$`County Code`)
+US_GLC$`State Name` <- tolower(US_GLC$`State Name`)
+US_GLC$`County Name` <- tolower(US_GLC$`County Name`)
+
+
+county_acc = acc %>%
+  group_by(STATE,COUNTY) %>%
+  summarise(accidents = n())
+
+joined_dat = US_GLC %>%
+  inner_join(county_acc,by=c('STATE','COUNTY'))
+  
+
+county %>%
+  inner_join(joined_dat, by = c("State Name", "County Name")) %>%
+  ggplot(mapping=aes(x=long, y=lat)) + geom_polygon(aes(group=group, fill=accidents)) + 
+  xlim(c(-130, -60)) + ylim(c(20,50)) + xlab('Longitude') + ylab('Latitude') + 
+  ggtitle('Accidents by county')
+
+
+
+US_GLC2 <- US_GLC %>%
+  mutate(`State Code` = as.integer(`State Code`), `County Code` = as.integer(`County Code`), `City Code` = as.integer(`City Code`)) %>%
+  inner_join(combined, c(`County Code` = 'COUNTY', `State Code` = 'STATE', `City Code` = 'CITY'))
+US_GLC2 %>%
+  filter(MONTH == 6 | MONTH == 7 | MONTH == 8) %>% 
+  filter(WEATHER < 98) %>%
+  group_by(`State Name`, WEATHER, MONTH) %>%
+  summarise(n = n()) %>%
+  ggplot(acc, mapping = aes(x=`State Name`, y=n, fill)) + geom_col() + coord_flip() + xlab('STATE') + ylab('NUMBER OF ACCIDENTS') + ggtitle("Accidents by State during the Summer Season")
+US_GLC2 %>%
+  filter(MONTH == 12 | MONTH == 1 | MONTH == 2) %>% 
+  filter(WEATHER < 98) %>%
+  group_by(`State Name`, WEATHER, MONTH) %>%
+  summarise(n = n()) %>%
+  ggplot(acc, mapping = aes(x=`State Name`, y=n, fill)) + geom_col() + coord_flip() + xlab('STATE') + ylab('NUMBER OF ACCIDENTS') + ggtitle("Accidents by State during the Winter Season")
+
