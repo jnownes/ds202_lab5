@@ -55,7 +55,7 @@ combined %>%
 #Question 7/8
 library("readxl")
 
-US_GLC<- readxl::read_xlsx('FRPP GLC - United StatesFeb132020.xlsx')
+US_GLC<- readxl::read_xlsx('FRPP_GLC_UnitedStatesFeb132020.xlsx')
 #US_territory<- read_excel('FRPP_GLC_US_Territories12419.xlsx')
 
 US_GLC <- US_GLC %>%
