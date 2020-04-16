@@ -126,7 +126,7 @@ US_GLC2 %>%
   filter(WEATHER < 98) %>%
   group_by(`State Name`, WEATHER, MONTH) %>%
   summarise(n = n()) %>%
-  ggplot(acc, mapping = aes(x=`State Name`, y=n)) + geom_col() + coord_flip() + xlab('STATE') + ylab('NUMBER OF ACCIDENTS') + ggtitle("Accidents by State during the Summer Season")
+  ggplot(acc, mapping = aes(x=`State Name`, y=n, fill=WEATHER)) + geom_col() + coord_flip() + xlab('STATE') + ylab('NUMBER OF ACCIDENTS') + ggtitle("Accidents by State during the Summer Season")
 
 
 US_GLC2 %>%
@@ -134,7 +134,7 @@ US_GLC2 %>%
   filter(WEATHER < 98) %>%
   group_by(`State Name`, WEATHER, MONTH) %>%
   summarise(n = n()) %>%
-  ggplot(acc, mapping = aes(x=`State Name`, y=n, fill)) + geom_col() + coord_flip() + xlab('STATE') + ylab('NUMBER OF ACCIDENTS') + ggtitle("Accidents by State during the Winter Season")
+  ggplot(acc, mapping = aes(x=`State Name`, y=n, fill=WEATHER)) + geom_col() + coord_flip() + xlab('STATE') + ylab('NUMBER OF ACCIDENTS') + ggtitle("Accidents by State during the Winter Season")
 ```
 
 Comparing the above two graphs, we see that in non-southern states, more accidents occur during the summer months than during the winter months. However, in the warmer, more southern states there is no seasonal trend. This can be understood by considering that there is not much difference in weather year-round for the southern states.
